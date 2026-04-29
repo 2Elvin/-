@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>通行证考试系统</title>
+<style>
+body{font-family:sans-serif;background:#0f172a;color:#e5e7eb;margin:0}
+.container{max-width:800px;margin:auto;padding:16px}
+.card{background:#1e293b;padding:16px;border-radius:10px;margin-bottom:12px}
+button{padding:10px;border:none;border-radius:8px;background:#f59e0b;color:#000;font-weight:bold;margin:5px 0;width:100%}
+.opt{padding:10px;border:1px solid #334155;border-radius:8px;margin:6px 0;cursor:pointer}
+.opt.sel{background:#f59e0b;color:#000}
+.top{display:flex;justify-content:space-between;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>控制区通行证考试</h2>
+<div id="app"></div>
+</div>
+
+<script>
+// ====== 题库（你自己补全）======
+var QUESTION_BANK = [
+{type:"判断题",q:"机场控制区通行证是有效凭证。",a:1},
+{type:"判断题",q:"进入控制区无需安检。",a:0},
+{type:"单选题",q:"主管部门是？",o:["机场集团","公安局","民航局","其他"],a:1},
+];
+
+// ====== 生成20题 ======
+function generatePaper(){
+  let arr = QUESTION_BANK.sort(()=>0.5-Math.random());
+  return arr.slice(0,20);
+}
+
+// ====== 状态 ======
+var paper=[],i=0,ans=[],score=0;
+
+// ====== 首页 ======
+function home(){
+  app.innerHTML=`
+  <div class="card">
+    <button onclick="start()">开始考试</button>
+  </div>`;
+}
+
+// ====== 开始 ======
+function start(){
+  paper=generatePaper();
+  i=0;ans=[];score=0;
+  render();
+}
+
+// ====== 渲染题目 ======
+function render(){
+  let q=paper[i];
+  let html=`<div class="card">
+  <div class="top">
+    <span>${i+1}/20</span>
+    <button onclick="exitExam()">退出</button>
+  </div>
+  <h3>${q.q}</h3>`;
+
+  if(q.type==="判断题"){
+    ["对","错"].forEach((t,idx)=>{
+      html+=`<div class="opt ${ans[i]===idx?'sel':''}" onclick="pick(${idx})">${t}</div>`;
+    });
+  }else{
+    q.o.forEach((op,idx)=>{
+      html+=`<div class="opt ${ans[i]===idx?'sel':''}" onclick="pick(${idx})">${op}</div>`;
+    });
+  }
+
+  html+=`<button onclick="prev()" ${i==0?"disabled":""}>上一题</button>`;
+  html+=`<button onclick="next()">${i==19?"交卷":"下一题"}</button>`;
+  html+=`</div>`;
+
+  app.innerHTML=html;
+}
+
+// ====== 选择 ======
+function pick(v){
+  ans[i]=v;
+  render();
+}
+
+// ====== 上一题 ======
+function prev(){
+  i--;
+  render();
+}
+
+// ====== 下一题 / 交卷 ======
+function next(){
+  if(ans[i]===undefined){
+    alert("请选择答案");
+    return;
+  }
+
+  if(i==19){
+    submit();
+  }else{
+    i++;
+    render();
+  }
+}
+
+// ====== 退出 ======
+function exitExam(){
+  if(confirm("退出将清空答题，确定退出？")){
+    home();
+  }
+}
+
+// ====== 交卷 ======
+function submit(){
+  score=0;
+  let wrong=[];
+
+  for(let j=0;j<paper.length;j++){
+    let q=paper[j];
+    if(ans[j]===q.a){
+      score+=5; // 20题=100分
+    }else{
+      wrong.push({q:q,ua:ans[j]});
+    }
+  }
+
+  let html=`<div class="card">
+  <h3>成绩：${score} / 100</h3>
+  <button onclick="showWrong()">查看错题</button>
+  <button onclick="home()">返回首页</button>
+  </div>`;
+
+  window._wrong = wrong;
+  app.innerHTML=html;
+}
+
+// ====== 错题查看 ======
+function showWrong(){
+  let wrong=window._wrong||[];
+
+  if(wrong.length==0){
+    app.innerHTML="<div class='card'>全对！🎉</div>";
+    return;
+  }
+
+  let html="<div class='card'><h3>错题</h3>";
+
+  wrong.forEach(item=>{
+    let q=item.q;
+    html+=`<div><b>${q.q}</b></div>`;
+
+    if(q.type==="判断题"){
+      html+=`<div>你的答案：${item.ua==1?"对":"错"}</div>`;
+      html+=`<div>正确答案：${q.a==1?"对":"错"}</div>`;
+    }else{
+      html+=`<div>你的答案：${q.o[item.ua]}</div>`;
+      html+=`<div>正确答案：${q.o[q.a]}</div>`;
+    }
+
+    html+="<hr>";
+  });
+
+  html+=`<button onclick="home()">返回首页</button></div>`;
+  app.innerHTML=html;
+}
+
+// ====== 初始化 ======
+home();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>通行证考试系统</title>
+<style>
+body{font-family:sans-serif;background:#0f172a;color:#e5e7eb;margin:0}
+.container{max-width:800px;margin:auto;padding:16px}
+.card{background:#1e293b;padding:16px;border-radius:10px;margin-bottom:12px}
+button{padding:10px;border:none;border-radius:8px;background:#f59e0b;color:#000;font-weight:bold;margin:5px 0;width:100%}
+.opt{padding:10px;border:1px solid #334155;border-radius:8px;margin:6px 0;cursor:pointer}
+.opt.sel{background:#f59e0b;color:#000}
+.top{display:flex;justify-content:space-between;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>控制区通行证考试</h2>
+<div id="app"></div>
+</div>
+
+<script>
+// ====== 题库（你自己补全）======
+var QUESTION_BANK = [
+{type:"判断题",q:"机场控制区通行证是有效凭证。",a:1},
+{type:"判断题",q:"进入控制区无需安检。",a:0},
+{type:"单选题",q:"主管部门是？",o:["机场集团","公安局","民航局","其他"],a:1},
+];
+
+// ====== 生成20题 ======
+function generatePaper(){
+  let arr = QUESTION_BANK.sort(()=>0.5-Math.random());
+  return arr.slice(0,20);
+}
+
+// ====== 状态 ======
+var paper=[],i=0,ans=[],score=0;
+
+// ====== 首页 ======
+function home(){
+  app.innerHTML=`
+  <div class="card">
+    <button onclick="start()">开始考试</button>
+  </div>`;
+}
+
+// ====== 开始 ======
+function start(){
+  paper=generatePaper();
+  i=0;ans=[];score=0;
+  render();
+}
+
+// ====== 渲染题目 ======
+function render(){
+  let q=paper[i];
+  let html=`<div class="card">
+  <div class="top">
+    <span>${i+1}/20</span>
+    <button onclick="exitExam()">退出</button>
+  </div>
+  <h3>${q.q}</h3>`;
+
+  if(q.type==="判断题"){
+    ["对","错"].forEach((t,idx)=>{
+      html+=`<div class="opt ${ans[i]===idx?'sel':''}" onclick="pick(${idx})">${t}</div>`;
+    });
+  }else{
+    q.o.forEach((op,idx)=>{
+      html+=`<div class="opt ${ans[i]===idx?'sel':''}" onclick="pick(${idx})">${op}</div>`;
+    });
+  }
+
+  html+=`<button onclick="prev()" ${i==0?"disabled":""}>上一题</button>`;
+  html+=`<button onclick="next()">${i==19?"交卷":"下一题"}</button>`;
+  html+=`</div>`;
+
+  app.innerHTML=html;
+}
+
+// ====== 选择 ======
+function pick(v){
+  ans[i]=v;
+  render();
+}
+
+// ====== 上一题 ======
+function prev(){
+  i--;
+  render();
+}
+
+// ====== 下一题 / 交卷 ======
+function next(){
+  if(ans[i]===undefined){
+    alert("请选择答案");
+    return;
+  }
+
+  if(i==19){
+    submit();
+  }else{
+    i++;
+    render();
+  }
+}
+
+// ====== 退出 ======
+function exitExam(){
+  if(confirm("退出将清空答题，确定退出？")){
+    home();
+  }
+}
+
+// ====== 交卷 ======
+function submit(){
+  score=0;
+  let wrong=[];
+
+  for(let j=0;j<paper.length;j++){
+    let q=paper[j];
+    if(ans[j]===q.a){
+      score+=5; // 20题=100分
+    }else{
+      wrong.push({q:q,ua:ans[j]});
+    }
+  }
+
+  let html=`<div class="card">
+  <h3>成绩：${score} / 100</h3>
+  <button onclick="showWrong()">查看错题</button>
+  <button onclick="home()">返回首页</button>
+  </div>`;
+
+  window._wrong = wrong;
+  app.innerHTML=html;
+}
+
+// ====== 错题查看 ======
+function showWrong(){
+  let wrong=window._wrong||[];
+
+  if(wrong.length==0){
+    app.innerHTML="<div class='card'>全对！🎉</div>";
+    return;
+  }
+
+  let html="<div class='card'><h3>错题</h3>";
+
+  wrong.forEach(item=>{
+    let q=item.q;
+    html+=`<div><b>${q.q}</b></div>`;
+
+    if(q.type==="判断题"){
+      html+=`<div>你的答案：${item.ua==1?"对":"错"}</div>`;
+      html+=`<div>正确答案：${q.a==1?"对":"错"}</div>`;
+    }else{
+      html+=`<div>你的答案：${q.o[item.ua]}</div>`;
+      html+=`<div>正确答案：${q.o[q.a]}</div>`;
+    }
+
+    html+="<hr>";
+  });
+
+  html+=`<button onclick="home()">返回首页</button></div>`;
+  app.innerHTML=html;
+}
+
+// ====== 初始化 ======
+home();
+</script>
+</body>
+</html>
