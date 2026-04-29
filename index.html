@@ -3,591 +3,508 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>控制区通行证考试系统</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<title>控制区通行证考试</title>
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0b1426;--bg2:#111e35;--card:#162a48;--card2:#1c3356;
-  --accent:#c9a84c;--accent2:#d9bc68;--accent-bg:rgba(201,168,76,.12);
-  --txt:#e8e2d6;--txt2:#8a9bb5;--txt3:#556a82;
-  --ok:#4caf50;--ok-bg:rgba(76,175,80,.12);
-  --err:#ef5350;--err-bg:rgba(239,83,80,.12);
-  --border:rgba(255,255,255,.08);--shadow:0 4px 24px rgba(0,0,0,.3);
-  --radius:12px;--radius-sm:8px;
-}
-html{font-size:16px;scroll-behavior:smooth}
-body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;line-height:1.6}
-.screen{display:none;min-height:100vh;animation:fadeUp .4s ease}
-.screen.active{display:flex;flex-direction:column}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:sans-serif;background:#0a0f1a;color:#e0e0e0}
+.page{display:none}.page.on{display:block}
+#page-quiz.on{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 
-/* ===== HOME ===== */
-#home{align-items:center;padding:40px 20px 60px;
-  background:radial-gradient(ellipse at 20% 30%,rgba(201,168,76,.06) 0%,transparent 50%),
-  radial-gradient(ellipse at 80% 70%,rgba(22,42,72,.5) 0%,transparent 50%),var(--bg)}
-.home-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;background:var(--accent-bg);border:1px solid rgba(201,168,76,.2);color:var(--accent);font-size:.8rem;font-weight:500;margin-bottom:24px;letter-spacing:.05em}
-.home-badge svg{width:16px;height:16px;fill:var(--accent)}
-.home-title{font-family:'Syne','Noto Sans SC',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;text-align:center;line-height:1.2;margin-bottom:8px;background:linear-gradient(135deg,var(--txt),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.home-sub{color:var(--txt2);font-size:1rem;text-align:center;margin-bottom:40px;font-weight:300}
-.mode-row{display:flex;gap:12px;margin-bottom:36px;flex-wrap:wrap;justify-content:center}
-.mode-btn{padding:10px 24px;border-radius:24px;border:1px solid var(--border);background:transparent;color:var(--txt2);cursor:pointer;font-size:.9rem;font-family:inherit;transition:all .25s}
-.mode-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
-.mode-btn:hover:not(.active){border-color:var(--accent);color:var(--accent)}
-.paper-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;width:100%;max-width:1000px}
-.paper-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
-.paper-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),transparent);opacity:0;transition:opacity .3s}
-.paper-card:hover{transform:translateY(-4px);border-color:rgba(201,168,76,.3);box-shadow:var(--shadow)}
-.paper-card:hover::before{opacity:1}
-.paper-num{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--accent);opacity:.3;position:absolute;top:12px;right:20px}
-.paper-name{font-size:1.3rem;font-weight:700;margin-bottom:6px}
-.paper-desc{color:var(--txt2);font-size:.85rem;margin-bottom:20px}
-.paper-stats{display:flex;gap:16px;flex-wrap:wrap}
-.paper-stat{font-size:.8rem;color:var(--txt3);display:flex;align-items:center;gap:4px}
-.paper-stat span{color:var(--txt2);font-weight:500}
-.paper-start{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:8px 20px;border-radius:20px;background:var(--accent-bg);color:var(--accent);font-size:.85rem;font-weight:500;border:1px solid rgba(201,168,76,.2);transition:all .25s}
-.paper-card:hover .paper-start{background:var(--accent);color:var(--bg)}
+.hp{padding:20px 16px}
+.hp h2{text-align:center;color:#d4a843;font-size:22px;margin:10px 0 4px}
+.hp p{text-align:center;color:#777;font-size:12px;margin-bottom:20px}
+.mr{display:flex;border:1px solid #333;border-radius:8px;overflow:hidden;margin-bottom:20px}
+.mb{flex:1;padding:12px;border:none;font-size:14px;font-weight:bold;cursor:pointer;background:#1a2030;color:#777}
+.mb.on{background:#d4a843;color:#0a0f1a}
+.pc{background:#1a2030;border:1px solid #333;border-radius:10px;padding:16px;margin-bottom:12px}
+.pc h3{font-size:16px;margin-bottom:6px}
+.pc p{font-size:12px;color:#777;margin-bottom:12px}
+.sb{width:100%;padding:12px;border:none;border-radius:8px;background:#d4a843;color:#0a0f1a;font-size:14px;font-weight:bold;cursor:pointer}
 
-/* ===== QUIZ ===== */
-#quiz{height:100vh;height:100dvh}
-.quiz-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;gap:12px}
-.quiz-header-left{display:flex;align-items:center;gap:12px;min-width:0}
-.btn-icon{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all .2s;flex-shrink:0}
-.btn-icon:hover{border-color:var(--err);color:var(--err)}
-.quiz-title-text{font-weight:700;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.quiz-header-right{display:flex;align-items:center;gap:16px;flex-shrink:0}
-.timer{display:flex;align-items:center;gap:6px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);padding:6px 14px;border-radius:20px;background:var(--accent-bg)}
-.timer.warn{color:var(--err);animation:pulse 1s infinite}
-.progress-text{font-size:.85rem;color:var(--txt2);font-weight:500}
+.qh{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#111828;border-bottom:1px solid #222;flex-shrink:0}
+.bk{background:none;border:1px solid #333;color:#777;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px}
+.hi{font-size:13px;color:#777;flex:1;text-align:center}
+.ht{font-size:14px;font-weight:bold;color:#d4a843}
 
-.quiz-nav-wrap{padding:10px 20px;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;-webkit-overflow-scrolling:touch}
-.quiz-nav-wrap::-webkit-scrollbar{height:0}
-.quiz-nav{display:flex;gap:4px;align-items:center;min-width:max-content}
-.nav-label{font-size:.7rem;color:var(--txt3);font-weight:700;padding:0 6px;white-space:nowrap;letter-spacing:.05em}
-.nav-dot{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:transparent;color:var(--txt3);cursor:pointer;font-size:.75rem;font-weight:600;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-.nav-dot:hover{border-color:var(--accent);color:var(--accent)}
-.nav-dot.answered{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
-.nav-dot.current{background:var(--accent);color:var(--bg);border-color:var(--accent)}
-.nav-dot.review-ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
-.nav-dot.review-err{background:var(--err-bg);border-color:var(--err);color:var(--err)}
+.qt{display:flex;gap:4px;padding:8px 14px;overflow-x:auto;background:#111828;border-bottom:1px solid #222;flex-shrink:0}
+.qt::-webkit-scrollbar{display:none}
+.tl{font-size:10px;color:#555;font-weight:bold;white-space:nowrap;padding:4px 2px;flex-shrink:0}
+.tn{min-width:28px;height:28px;border-radius:50%;border:1.5px solid #333;background:none;color:#555;font-size:11px;font-weight:bold;cursor:pointer;flex-shrink:0}
+.tn.cu{background:#d4a843;color:#0a0f1a;border-color:#d4a843}
+.tn.an{background:rgba(212,168,67,0.15);border-color:#d4a843;color:#d4a843}
+.tn.ck{background:rgba(76,175,80,0.15);border-color:#4caf50;color:#4caf50}
+.tn.wr{background:rgba(244,67,54,0.15);border-color:#f44336;color:#f44336}
 
-.quiz-body{flex:1;overflow-y:auto;padding:24px 20px 100px;-webkit-overflow-scrolling:touch}
-.q-section-label{display:inline-block;font-size:.75rem;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:4px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.05em}
-.q-score{font-size:.75rem;color:var(--txt3);margin-bottom:12px}
-.q-text{font-size:1.05rem;font-weight:500;line-height:1.8;margin-bottom:20px}
-.q-options{display:flex;flex-direction:column;gap:10px}
-.q-option{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;transition:all .2s;user-select:none}
-.q-option:hover{border-color:rgba(201,168,76,.3);background:var(--card)}
-.q-option.selected{border-color:var(--accent);background:var(--accent-bg)}
-.q-option.correct{border-color:var(--ok);background:var(--ok-bg)}
-.q-option.wrong{border-color:var(--err);background:var(--err-bg)}
-.q-option.disabled{pointer-events:none}
-.q-option-indicator{width:22px;height:22px;border-radius:50%;border:2px solid var(--txt3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;font-size:.7rem}
-.q-option.selected .q-option-indicator{border-color:var(--accent);background:var(--accent);color:var(--bg)}
-.q-option.correct .q-option-indicator{border-color:var(--ok);background:var(--ok);color:#fff}
-.q-option.wrong .q-option-indicator{border-color:var(--err);background:var(--err);color:#fff}
-.q-option-text{font-size:.95rem;line-height:1.5}
-.q-option-label{font-weight:700;color:var(--txt2);margin-right:4px}
-.q-tf{display:flex;gap:12px}
-.q-tf .q-option{flex:1;justify-content:center;text-align:center;font-weight:600}
+.qb{flex:1;overflow-y:auto;padding:16px 16px 80px;-webkit-overflow-scrolling:touch}
+.st{display:inline-block;font-size:11px;font-weight:bold;color:#d4a843;background:rgba(212,168,67,0.12);padding:3px 8px;border-radius:6px;margin-bottom:8px}
+.qi{font-size:11px;color:#555;margin-bottom:8px}
+.qt2{font-size:15px;line-height:1.8;margin-bottom:14px}
 
-.quiz-footer{position:fixed;bottom:0;left:0;right:0;display:flex;gap:10px;padding:12px 20px;background:var(--bg2);border-top:1px solid var(--border);z-index:10}
-.btn{padding:10px 24px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-size:.9rem;font-weight:600;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-secondary{background:var(--card);color:var(--txt2);border:1px solid var(--border)}
-.btn-secondary:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
-.btn-primary{background:var(--accent);color:var(--bg);flex:1}
-.btn-primary:hover:not(:disabled){background:var(--accent2)}
-.btn-submit{background:var(--ok);color:#fff;padding:10px 32px}
-.btn-submit:hover:not(:disabled){filter:brightness(1.1)}
-.btn-home{background:var(--accent);color:var(--bg);padding:12px 32px;border-radius:var(--radius-sm);font-size:1rem;font-weight:700;border:none;cursor:pointer;font-family:inherit}
+.op{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:8px;border:1.5px solid #333;background:#111828;margin-bottom:8px;cursor:pointer}
+.op:active{transform:scale(0.98)}
+.op.sl{border-color:#d4a843;background:rgba(212,168,67,0.1)}
+.op.ck{border-color:#4caf50;background:rgba(76,175,80,0.1)}
+.op.wr{border-color:#f44336;background:rgba(244,67,54,0.1)}
+.od{width:20px;height:20px;border-radius:50%;border:2px solid #555;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;margin-top:1px}
+.op.sl .od{border-color:#d4a843;background:#d4a843;color:#0a0f1a}
+.op.ck .od{border-color:#4caf50;background:#4caf50;color:#fff}
+.op.wr .od{border-color:#f44336;background:#f44336;color:#fff}
+.ot{font-size:13px;line-height:1.5}
+.ol{font-weight:bold;color:#777;margin-right:3px}
+.tfr{display:flex;gap:8px}
+.tfr .op{flex:1;justify-content:center;text-align:center;font-weight:600}
+.pt{margin-top:8px;padding:10px;border-radius:8px;font-size:13px;font-weight:600}
+.pt.pa{background:rgba(76,175,80,0.1);color:#4caf50}
+.pt.fa{background:rgba(244,67,54,0.1);color:#f44336}
 
-/* ===== RESULT ===== */
-#result{align-items:center;padding:40px 20px 60px;
-  background:radial-gradient(ellipse at 50% 20%,rgba(201,168,76,.06) 0%,transparent 50%),var(--bg)}
-.result-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:40px;max-width:700px;width:100%;text-align:center;margin-bottom:24px}
-.result-score{font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;color:var(--accent);line-height:1}
-.result-score span{font-size:1.5rem;color:var(--txt3);font-weight:600}
-.result-pct{font-size:1.2rem;color:var(--txt2);margin:8px 0 24px}
-.result-bar{height:8px;border-radius:4px;background:var(--bg);overflow:hidden;margin-bottom:24px}
-.result-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--ok));transition:width 1s ease}
-.result-details{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center}
-.result-detail-item{padding:12px;border-radius:var(--radius-sm);background:var(--bg)}
-.result-detail-label{font-size:.75rem;color:var(--txt3);margin-bottom:4px}
-.result-detail-value{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700}
-.result-detail-value.ok{color:var(--ok)}
-.result-detail-value.err{color:var(--err)}
-.result-detail-value.accent{color:var(--accent)}
+.qf{position:fixed;bottom:0;left:0;right:0;display:flex;gap:8px;padding:10px 14px;background:#111828;border-top:1px solid #222;z-index:10}
+.fb{flex:1;padding:12px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.fb.pr{background:#1a2030;color:#777}
+.fb.nx{background:#d4a843;color:#0a0f1a}
+.fb.su{background:#4caf50;color:#fff;flex:none;padding:12px 20px}
+.fb:disabled{opacity:0.3}
 
-.result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.rp{padding:20px 16px 60px}
+.sb2{text-align:center;background:#1a2030;border-radius:12px;padding:24px 16px;margin-bottom:16px}
+.sbg{font-size:42px;font-weight:900;color:#d4a843}
+.sbg span{font-size:16px;color:#555}
+.sbs{font-size:13px;color:#777;margin:4px 0 14px}
+.sbb{height:6px;border-radius:3px;background:rgba(255,255,255,0.08);overflow:hidden;margin-bottom:14px}
+.sbf{height:100%;border-radius:3px;background:linear-gradient(90deg,#d4a843,#4caf50);width:0%;transition:width 1s}
+.sbr{display:flex;gap:8px}
+.sbi{flex:1;padding:10px 6px;border-radius:8px;background:rgba(255,255,255,0.04);text-align:center}
+.sbil{font-size:10px;color:#555}
+.sbiv{font-size:18px;font-weight:700}
+.rbs{display:flex;gap:10px;margin-bottom:20px}
+.rbs button{flex:1;padding:14px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer}
+.bh{background:#d4a843;color:#0a0f1a}
+.br{background:#1a2030;color:#e0e0e0;border:1px solid #333}
 
-.review-section{max-width:700px;width:100%}
-.review-section h3{font-size:1.1rem;font-weight:700;margin:24px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border);color:var(--accent)}
-.review-q{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;margin-bottom:12px}
-.review-q.review-ok{border-left:3px solid var(--ok)}
-.review-q.review-err{border-left:3px solid var(--err)}
-.review-q-num{font-size:.8rem;color:var(--txt3);margin-bottom:8px;display:flex;justify-content:space-between}
-.review-q-text{font-size:.95rem;margin-bottom:12px;line-height:1.7}
-.review-q .q-option{margin-bottom:6px;font-size:.85rem;padding:10px 12px}
-.review-q .q-option.correct{border-color:var(--ok);background:var(--ok-bg)}
-.review-q .q-option.wrong{border-color:var(--err);background:var(--err-bg)}
-.review-q .q-option.selected{border-color:var(--accent);background:var(--accent-bg)}
-.review-q .q-option.selected.wrong-answer{border-color:var(--err);background:var(--err-bg)}
-.review-q .q-tf{gap:8px}
-.review-q .q-tf .q-option{font-size:.85rem;padding:8px}
-.review-answer{font-size:.85rem;color:var(--ok);font-weight:600;margin-top:8px}
-
-@media(max-width:640px){
-  .paper-grid{grid-template-columns:1fr}
-  .quiz-body{padding:16px 16px 100px}
-  .result-card{padding:28px 20px}
-  .result-score{font-size:3rem}
-  .result-details{grid-template-columns:1fr}
-  .quiz-header{padding:10px 12px}
-  .quiz-nav-wrap{padding:8px 12px}
-  .quiz-footer{padding:10px 12px}
-  .btn{padding:10px 16px;font-size:.85rem}
-}
+.rv{text-align:left}
+.rv h3{font-size:14px;color:#d4a843;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid #222}
+.ri{background:#1a2030;border-radius:8px;padding:14px;margin-bottom:10px;border-left:3px solid #4caf50}
+.ri.wr{border-left-color:#f44336}
+.rh{display:flex;justify-content:space-between;font-size:11px;color:#555;margin-bottom:4px}
+.rq{font-size:13px;line-height:1.7;margin-bottom:8px}
+.ra{margin-top:6px;font-size:12px;font-weight:600}
 </style>
 </head>
 <body>
-<div id="app">
-  <!-- HOME -->
-  <div class="screen active" id="home">
-    <div class="home-badge">
-      <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-      福州长乐国际机场
-    </div>
-    <h1 class="home-title">控制区通行证<br>管理规定考试</h1>
-    <p class="home-sub">福建省公安厅机场公安局 · 2019年6月1日起执行</p>
-    <div class="mode-row">
-      <button class="mode-btn active" data-mode="exam" onclick="setMode('exam')">考试模式</button>
-      <button class="mode-btn" data-mode="practice" onclick="setMode('practice')">练习模式</button>
-    </div>
-    <div class="paper-grid" id="paperGrid"></div>
-  </div>
 
-  <!-- QUIZ -->
-  <div class="screen" id="quiz">
-    <div class="quiz-header">
-      <div class="quiz-header-left">
-        <button class="btn-icon" onclick="exitQuiz()" title="退出">✕</button>
-        <span class="quiz-title-text" id="qTitle"></span>
-      </div>
-      <div class="quiz-header-right">
-        <span class="progress-text" id="qProgress"></span>
-        <div class="timer" id="timerBox"><span id="timerText">60:00</span></div>
-      </div>
-    </div>
-    <div class="quiz-nav-wrap"><div class="quiz-nav" id="qNav"></div></div>
-    <div class="quiz-body" id="qBody"></div>
-    <div class="quiz-footer">
-      <button class="btn btn-secondary" id="btnPrev" onclick="prevQ()">上一题</button>
-      <button class="btn btn-primary" id="btnNext" onclick="nextQ()">下一题</button>
-      <button class="btn btn-submit" id="btnSubmit" onclick="submitQuiz()">交卷</button>
-    </div>
-  </div>
-
-  <!-- RESULT -->
-  <div class="screen" id="result">
-    <div class="result-card" id="resultCard"></div>
-    <div class="result-actions" style="margin-bottom:32px">
-      <button class="btn-home" onclick="goHome()">返回首页</button>
-      <button class="btn-home" style="background:var(--card);color:var(--txt);border:1px solid var(--border)" onclick="retryPaper()">再做一次</button>
-    </div>
-    <div class="review-section" id="reviewSection"></div>
-  </div>
+<div id="page-home" class="page on">
+<div class="hp">
+<h2>控制区通行证考试</h2>
+<p>福州长乐国际机场 · 2019年6月1日起执行</p>
+<div class="mr">
+<button class="mb on" id="me" onclick="setMode(0)">考试模式</button>
+<button class="mb" id="mp" onclick="setMode(1)">练习模式</button>
+</div>
+<div id="pl"></div>
+</div>
 </div>
 
+<div id="page-quiz" class="page"></div>
+<div id="page-result" class="page"></div>
+
 <script>
-// ========== EXAM DATA ==========
-const papers = [
-{
-  title:"试卷一",
-  sections:[
-  {name:"判断题",score:2,questions:[
-    {q:"机场控制区通行证是人员、车辆进出机场控制区的有效凭证。",a:true},
-    {q:"任何单位的制式服装、标志、标识、证件、证明均可作为通行福州机场控制区的凭证。",a:false},
-    {q:"福州机场控制区实行封闭式分区管理。",a:true},
-    {q:"本规定所称"以上"包括本数，"以内"不包括本数。",a:false},
-    {q:"申办通行证的人员应当通过背景调查，方可办理通行证。",a:true},
-    {q:"人员临时通行证在工作时间内随到随办，特殊情况可提前办理。",a:true},
-    {q:"持临时通行证的人员可以自行进入机场控制区，无需引领人员引领。",a:false},
-    {q:"控制区通行证属于免检证明，人员或车辆进入机场控制区时无需接受安全检查。",a:false},
-    {q:"伪造、变造、涂改通行证的行为，可依照《中华人民共和国治安管理处罚法》等进行处罚。",a:true},
-    {q:"本规定自2019年6月1日起执行。",a:true}
-  ]},
-  {name:"单选题",score:3,questions:[
-    {q:"福州机场通行证的主管部门是（ ）。",o:["福州机场集团公司","福建省公安厅机场公安局","福州市公安局","民航华东地区管理局"],a:1},
-    {q:"人员长期通行证的有效期为（ ）。",o:["1个月以上1年以内","6个月以上2年以内","9个月以上3年以内","1年以上5年以内"],a:2},
-    {q:"人员短期通行证的有效期为（ ）。",o:["1天至7天","7天以上9个月以内","7天以上6个月以内","1个月以上6个月以内"],a:1},
-    {q:"其他通行证（非临时）的办理期限为收件日起（ ）个工作日内办结。",o:["3","5","7","10"],a:2},
-    {q:"申办通行证的人员应接受不少于（ ）学时的通行证使用和管理培训。",o:["1","4","8","20"],a:0},
-    {q:"考核不合格的人员补考（ ）次仍不合格的，需经不少于20个学时的培训后再进行考核。",o:["1","2","3","5"],a:1},
-    {q:"持证人员调离、退休、辞职或被开除，申办单位应将其通行证回收并在（ ）日内交通行证主管部门注销。",o:["3","5","7","10"],a:1},
-    {q:"通行证有效期满需要变更的，应在期满前（ ）个工作日内向通行证主管部门提出变更申请。",o:["5","10","15","20"],a:1},
-    {q:"A3区是指（ ）。",o:["停机坪、围场路、服务车道","国内、国际进出港行李分拣、装卸区","滑行道、跑道","国内候机隔离区"],a:2},
-    {q:"申办单位可以最多提名（ ）名通行证审核签署人。",o:["1","2","3","5"],a:2}
-  ]},
-  {name:"多选题",score:5,questions:[
-    {q:"以下属于人员长期通行证发放范围的有（ ）。",o:["需进入控制区从事民航生产运输等工作，与用人单位签定2年以上或无固定期用工合同的工作人员","担负机场安全保卫任务的国家公务人员","口岸联检单位的工作人员","各单位新招录的试用期人员"],a:[0,1,2]},
-    {q:"持证人员在机场控制区内活动时，以下哪些行为是严禁的？（ ）",o:["使用伪造、变造、涂改的通行证","转借、冒用通行证","未经同意进入停机坪、跑道、滑行道等航空器活动区","在机场控制区非吸烟区吸烟"],a:[0,1,2,3]},
-    {q:"以下哪些情形需要办理人员临时通行证？（ ）",o:["负责警卫和国家规定的要客接待人员","进入控制区进行临时性施工、作业的人员","已办理长、短期通行证，因工作需进入本人通行证未申请区域的人员","各单位长期驻场的正式员工"],a:[0,1,2]},
-    {q:"通行证申办单位必须履行的职责包括（ ）。",o:["认真审核通行证申办材料","负责本单位通行证的申领、发放、续办、变更、挂失、注销等工作","对本单位员工进行空防安全及通行证使用管理的教育培训","制定本单位有关控制区通行证的管理制度"],a:[0,1,2,3]},
-    {q:"B区（国内候机隔离区）可通行的区域包括（ ）。",o:["国内出港旅客安检区至国内航班登机桥固定端之间的区域","D1区","D2区","E区"],a:[0,1]}
-  ]}
+var mode=0,pi=0,qi=0,ans={},done=false,res={},tm=3600,tid=null;
+
+var P=[
+{t:"试卷一",s:[
+{n:"判断题",p:2,d:[
+{q:"机场控制区通行证是人员、车辆进出机场控制区的有效凭证。",a:1},
+{q:"任何单位的制式服装、标志、标识、证件、证明均可作为通行福州机场控制区的凭证。",a:0},
+{q:"福州机场控制区实行封闭式分区管理。",a:1},
+{q:"本规定所称以上包括本数，以内不包括本数。",a:0},
+{q:"申办通行证的人员应当通过背景调查，方可办理通行证。",a:1},
+{q:"人员临时通行证在工作时间内随到随办，特殊情况可提前办理。",a:1},
+{q:"持临时通行证的人员可以自行进入机场控制区，无需引领人员引领。",a:0},
+{q:"控制区通行证属于免检证明，进入控制区无需接受安全检查。",a:0},
+{q:"伪造变造涂改通行证可依照治安管理处罚法等进行处罚。",a:1},
+{q:"本规定自2019年6月1日起执行。",a:1}]},
+{n:"单选题",p:3,d:[
+{q:"福州机场通行证的主管部门是？",o:["福州机场集团公司","福建省公安厅机场公安局","福州市公安局","民航华东地区管理局"],a:1},
+{q:"人员长期通行证的有效期为？",o:["1个月以上1年以内","6个月以上2年以内","9个月以上3年以内","1年以上5年以内"],a:2},
+{q:"人员短期通行证的有效期为？",o:["1天至7天","7天以上9个月以内","7天以上6个月以内","1个月以上6个月以内"],a:1},
+{q:"其他通行证的办理期限为收件日起几个工作日办结？",o:["3","5","7","10"],a:2},
+{q:"申办通行证的人员应接受不少于几学时培训？",o0},
+{q:"补考几次仍不合格需经20学时培训后再考核？",o:["1","2","3","5"],a:1},
+{q:"持证人员离岗后通行证应在几日内注销？",o:["3","5","7","10"],a:1},
+{q:"通行证期满前几个工作日提出变更申请？",o:["5","10","15","20"],a:1},
+{q:"A3区是指？",o:["停机坪围场路","行李分拣装卸区","滑行道跑道","国内候机隔离区"],a:2},
+{q:"申办单位最多提名几名审核签署人？",o:["1","2","3","5"],a:2}]},
+{n:"多选题",p:5,d:[
+{q:"以下属于人员长期通行证发放范围的有？",o:["签定2年以上合同的工作人员","担负安保任务的公务人员","口岸联检单位工作人员","新招录试用期人员"],a:[0,1,2]},
+{q:"持证人员在控制区内严禁的行为？",o:["使用伪造变造通行证","转借冒用通行证","未经同意进入航空器活动区","在非吸烟区吸烟"],a:[0,1,2,3]},
+{q:"哪些情形需要办理临时通行证？",o:["警卫要客接待人员","临时施工人员","已办证需进入未申请区域的人员","长期驻场正式员工"],a:[0,1,2]},
+{q:"申办单位必须履行的职责包括？",o:["审核申办材料","负责通行证申领发放等","教育培训员工","制定管理制度"],a:[0,1,2,3]},
+{q:"B区可通行的区域包括？",o:["国内出港安检区至登机桥固定端","D1区","D2区","E区"],a:[0,1]}]}
 ]},
-{
-  title:"试卷二",
-  sections:[
-  {name:"判断题",score:2,questions:[
-    {q:"引领是指引导、带领不具有单独进入控制区资格的人员进入控制区的一种资格。",a:true},
-    {q:"持短期通行证的人员即具有引领资格。",a:false},
-    {q:"每次进入控制区，引领部门要确定至少1名引领人。",a:true},
-    {q:"持车辆长期通行证进入控制区，查验人员应检查驾驶员内场驾驶证。",a:true},
-    {q:"持车辆短期、临时通行证进入控制区，应检查驾驶员驾驶证和监管人员内场驾驶证。",a:true},
-    {q:"丢失长期通行证的，取消办证资格1个月，后补发6个月有效期的短期通行证。",a:true},
-    {q:"在一个换证周期内因个人保管不善两次丢失通行证的，取消持证资格。",a:true},
-    {q:"申办单位最多可以提名5名通行证审核签署人。",a:false},
-    {q:"人员通行证和车辆通行证根据其使用期限和性质分为长期、短期、临时和特殊四种。",a:true},
-    {q:"车辆长期通行证有效期为6个月以上2年以内。",a:true}
-  ]},
-  {name:"单选题",score:3,questions:[
-    {q:"A区是指（ ）。",o:["航空器活动区和行李分拣装卸区","国内候机隔离区","国际候机隔离区","到达行李领取区"],a:0},
-    {q:"D区是指（ ）。",o:["航空器客、货舱区","货物存放区","到达行李领取区和国际联检区","航空器维修区"],a:2},
-    {q:"E区是指（ ）。",o:["货物存放区","航空器客、货舱区","航空器维修区","跑道区"],a:1},
-    {q:"申办单位首次申办通行证前应当向通行证主管部门（ ）。",o:["提交申请报告","备案登记","缴纳保证金","签订安全协议"],a:1},
-    {q:"指定空防联络员的人数为（ ）名，办证量大的单位可以指定（ ）名。",o:["1，2至3","2，3至5","1，2至5","2，2至3"],a:0},
-    {q:"车辆短期通行证的有效期为（ ）。",o:["1天至7天","7天以上6个月以内","7天以上9个月以内","1个月以上6个月以内"],a:1},
-    {q:"查验人员对符合规定要求的人员和车辆（ ）。",o:["可以选择性放行","不得无故不予放行","需请示上级后放行","需登记后放行"],a:1},
-    {q:"通行证的具体查验工作由（ ）和各驻场单位安检部门负责。",o:["福州机场公安局","福州空港公司","民航福建监管局","福州机场消防"],a:1},
-    {q:"C区（国际候机隔离区）可通行（ ）区。",o:["D1","D2","D3","E1"],a:1},
-    {q:"背景调查工作由（ ）按照民航局关于背景调查规定的要求开展。",o:["通行证主管部门","申办单位","机场公安局","民航局"],a:1}
-  ]},
-  {name:"多选题",score:5,questions:[
-    {q:"持证人员必须履行的职责包括（ ）。",o:["进入机场控制区时应主动接受安全检查","在胸前明显处佩戴通行证","在有效时限和允许通行区域内使用","持临时通行证人员应由引领人员引领进入"],a:[0,1,2,3]},
-    {q:"以下属于人员短期通行证发放范围的有（ ）。",o:["各单位新招录的试用期或实习期人员","从事生产、商业等工作需短期进入的人员","进行短期建设、装修、维修等施工作业人员","因证件丢失补办的人员"],a:[0,1,2,3]},
-    {q:"持证人有哪些行为之一的，视情节予以批评教育、暂扣通行证或者收回通行证？（ ）",o:["未履行引领人全程监管职责的","跨区域通行的","擅自进入与本单位业务无关的航空器的","涂改、损毁通行证的"],a:[0,1,2,3]},
-    {q:"车辆通行证的发放范围包括（ ）。",o:["长期通行证：从事机场生产等工作需要进入停机坪的非机场特种车辆","短期通行证：因工作需要短期进入停机坪的车辆","临时通行证：因工作需要临时进入停机坪的车辆","特殊通行证：因警卫保障或处置重大事件等需要进入机坪的车辆"],a:[0,1,2,3]},
-    {q:"申请办理人员长期、短期通行证应提交的资料包括（ ）。",o:["申办单位出具的办证申请函","《福州长乐国际机场控制区通行证申请表》","申办人员背景调查材料","通行证主管部门认为需要提交的其他相关材料"],a:[0,1,2,3]}
-  ]}
+{t:"试卷二",s:[
+{n:"判断题",p:2,d:[
+{q:"引领是引导不具有单独进入控制区资格的人员的一种资格。",a:1},
+{q:"持短期:["1","4","8","20"],a:通行证的人员即具有引领资格。",a:0},
+{q:"每次进入控制区引领部门要确定至少1名引领人。",a:1},
+{q:"持车辆长期通行证进入控制区应检查驾驶员内场驾驶证。",a:1},
+{q:"持车辆短期临时通行证进入应检查驾驶员和监管人员内场驾驶证。",a:1},
+{q:"丢失长期通行证取消办证资格1个月后补发6个月短期证。",a:1},
+{q:"换证周期内因个人原因两次丢失通行证取消持证资格。",a:1},
+{q:"申办单位最多可提名5名通行证审核签署人。",a:0},
+{q:"人员和车辆通行证分为长期短期临时特殊四种。",a:1},
+{q:"车辆长期通行证有效期为6个月以上2年以内。",a:1}]},
+{n:"单选题",p:3,d:[
+{q:"A区是指？",o:["航空器活动区和行李分拣装卸区","国内候机隔离区","国际候机隔离区","到达行李领取区"],a:0},
+{q:"D区是指？",o:["航空器客货舱区","货物存放区","到达行李领取区和国际联检区","航空器维修区"],a:2},
+{q:"E区是指？",o:["货物存放区","航空器客货舱区","航空器维修区","跑道区"],a:1},
+{q:"申办单位首次申办前应向主管部门？",o:["提交申请报告","备案登记","缴纳保证金","签订安全协议"],a:1},
+{q:"空防联络员人数为几名？",o:["1名可指定2至3名","2名可指定3至5名","1名可指定2至5名","2名可指定2至3名"],a:0},
+{q:"车辆短期通行证有效期为？",o:["1天至7天","7天以上6个月以内","7天以上9个月以内","1个月以上6个月以内"],a:1},
+{q:"查验人员对符合规定的人员和车辆？",o:["可以选择性放行","不得无故不予放行","需请示上级后放行","需登记后放行"],a:1},
+{q:"通行证查验工作由谁负责？",o:["福州机场公安局","福州空港公司","民航福建监管局","福州机场消防"],a:1},
+{q:"C区可通行哪个区域？",o:["D1","D2","D3","E1"],a:1},
+{q:"背景调查工作由谁开展？",o:["通行证主管部门","申办单位","机场公安局","民航局"],a:1}]},
+{n:"多选题",p:5,d:[
+{q:"持证人员必须履行的职责包括？",o:["主动接受安全检查","胸前佩戴通行证","在有效时限和区域内使用","临时证人员由引领人引领进入"],a:[0,1,2,3]},
+{q:"人员短期通行证发放范围包括？",o:["试用期实习期人员","短期进入的人员","施工作业人员","证件丢失补办人员"],a:[0,1,2,3]},
+{q:"哪些行为视情节批评教育暂扣或收回通行证？",o:["未履行引领人监管职责","跨区域通行","擅自进入无关航空器","涂改损毁通行证"],a:[0,1,2,3]},
+{q:"车辆通行证发放范围包括？",o:["长期证非机场特种车辆","短期证短期进入车辆","临时证临时进入车辆","特殊证警卫保障车辆"],a:[0,1,2,3]},
+{q:"申请人员长期短期通行证应提交的资料包括？",o:["办证申请函","通行证申请表","背景调查材料","主管部门要求的其他材料"],a:[0,1,2,3]}]}
 ]},
-{
-  title:"试卷三",
-  sections:[
-  {name:"判断题",score:2,questions:[
-    {q:"人员长期通行证的发放范围包括在机场控制区内从事商业经营的主管人员。",a:true},
-    {q:"申请办证单位应本着"方便工作、从严掌握"的原则。",a:true},
-    {q:"申办单位禁止为非本单位的人员、车辆申办通行证。",a:true},
-    {q:"车辆短期通行证延期续办的，还需提交驾驶员内场驾驶证复印件。",a:true},
-    {q:"申请变更人员长期、短期通行证的，所提交资料与新申请办理时所提交的资料完全相同。",a:false},
-    {q:"申办单位首次申办通行证前无需向通行证主管部门备案登记。",a:false},
-    {q:"未经通行证主管部门确认的申办单位、签署人、空防联络员签署或提交的办证申请，通行证主管部门不予受理。",a:true},
-    {q:"本规定由福建省公安厅机场公安局负责解释。",a:true},
-    {q:"丢失短期通行证的，取消办证资格1个月，后补发3个月有效期的短期通行证。",a:true},
-    {q:"非因个人主观原因丢失长、短期通行证的，经所在单位证明，可即时补办。",a:true}
-  ]},
-  {name:"单选题",score:3,questions:[
-    {q:"F1区是指（ ）。",o:["厦门航空福州分公司货物存放区","福州空港公司货物存放区","国内货物存放区","国际货物存放区"],a:1},
-    {q:"G2区是指（ ）。",o:["航空公司各自航空器维修区","东二飞基地控制区","货物存放区","停机坪区"],a:1},
-    {q:"人员特殊通行证的发放范围是（ ）。",o:["所有机场工作人员","专机保障或处置重大事件等特殊活动的保障人员","试用期人员","施工作业人员"],a:1},
-    {q:"申请办理车辆长期通行证，以下哪项不是必须提交的资料？（ ）",o:["车辆所在单位出具的办证申请函","驾驶员内场驾驶证复印件","车辆交强险复印件","车辆购置发票"],a:3},
-    {q:"申请补办人员通行证，如通行证被盗或遗失，须提供（ ）。",o:["公安机关报案证明","申办人员所在单位出具的遗失或被盗证明","本人书面说明","现场照片"],a:1},
-    {q:"挂失的通行证被找回，需要重新启用的，已补发通行证的应当（ ）。",o:["直接使用新证","同时交回补发的证件","无需处理","向公安机关报告"],a:1},
-    {q:"车辆临时通行证的有效期为（ ）。",o:["1天至7天","7天以上6个月以内","1天至30天","3天至15天"],a:0},
-    {q:"人员长期通行证的发放范围中，与用人单位签定用工合同的年限要求为（ ）年以上。",o:["1","2","3","5"],a:1},
-    {q:"查验人员应严格把关，严禁（ ）进入机场控制区。",o:["无证人员和车辆","外来人员","非工作人员","临时人员"],a:0},
-    {q:"持临时通行证进入机场控制区的车辆，申办单位应指定（ ）全程引领陪同。",o:["任何工作人员","持有车辆内场驾驶证的专门人员","安检人员","空防联络员"],a:1}
-  ]},
-  {name:"多选题",score:5,questions:[
-    {q:"持证人员在机场控制区内严禁的行为包括（ ）。",o:["使用伪造、变造、涂改的通行证","转借、冒用通行证，使用过期失效的通行证或超过授权区域范围通行","未经同意进入停机坪、跑道、滑行道、联络道等航空器活动区","进入与本单位生产保障无关的航空器"],a:[0,1,2,3]},
-    {q:"以下哪些属于申办单位违规行为，将视情节予以通报、责令整改或者暂停办理？（ ）",o:["以申办单位名义为非本单位人员、车辆申办通行证的","未认真履行教育培训职责，本单位员工在通行证考试中作弊的","未严格履行背景调查职责的","未按规定及时收回通行证的"],a:[0,1,2,3]},
-    {q:"申请变更人员长期、短期通行证应提交的资料包括（ ）。",o:["申办单位出具的通行证变更申请函","《福州长乐国际机场控制区通行证申请表》","申办人员背景调查材料","原通行证"],a:[0,1]},
-    {q:"申请办理车辆短期、临时通行证应提交的资料包括（ ）。",o:["车辆所在单位或用工单位出具的办证申请函","《福州长乐国际机场控制区车辆通行证申请表》","驾驶员驾驶证复印件，车辆交强险复印件","申办单位监管人员内场车辆驾驶证复印件"],a:[0,1,2,3]},
-    {q:"以下哪些行为依照《中华人民共和国治安管理处罚法》等进行处罚？（ ）",o:["伪造、变造、涂改通行证或者使用伪造、变造、涂改的通行证的","使用伪造、变造的国家机关证明文件申办通行证的","冒用他人通行证进入机场控制区的","无机场控制区通行证进入机场控制区的"],a:[0,1,2,3]}
-  ]}
+{t:"试卷三",s:[
+{n:"判断题",p:2,d:[
+{q:"人员长期通行证发放范围包括从事商业经营的主管人员。",a:1},
+{q:"申请办证单位应本着方便工作从严掌握的原则。",a:1},
+{q:"申办单位禁止为非本单位人员车辆申办通行证。",a:1},
+{q:"车辆短期通行证延期续办还需提交驾驶员内场驾驶证复印件。",a:1},
+{q:"申请变更人员通行证所提交资料与新申请完全相同。",a:0},
+{q:"申办单位首次申办前无需向主管部门备案登记。",a:0},
+{q:"未经主管部门确认的申办单位签署人提交的申请不予受理。",a:1},
+{q:"本规定由福建省公安厅机场公安局负责解释。",a:1},
+{q:"丢失短期通行证取消办证资格1个月后补发3个月短期证。",a:1},
+{q:"非个人主观原因丢失通行证经单位证明可即时补办。",a:1}]},
+{n:"单选题",p:3,d:[
+{q:"F1区是指？",o:["厦门航空福州分公司货物存放区","福州空港公司货物存放区","国内货物存放区","国际货物存放区"],a:1},
+{q:"G2区是指？",o:["航空公司各自航空器维修区","东二飞基地控制区","货物存放区","停机坪区"],a:1},
+{q:"人员特殊通行证的发放范围是？",o:["所有机场工作人员","专机保障或重大事件保障人员","试用期人员","施工作业人员"],a:1},
+{q:"申请车辆长期通行证以下哪项不是必须资料？",o:["办证申请函","驾驶员内场驾驶证复印件","车辆交强险复印件","车辆购置发票"],a:3},
+{q:"补办人员通行证如被盗或遗失须提供？",o:["公安机关报案证明","申办人所在单位出具的遗失或被盗证明","本人书面说明","现场照片"],a:1},
+{q:"挂失通行证被找回已补发的应当？",o:["直接使用新证","同时交回补发的证件","无需处理","向公安机关报告"],a:1},
+{q:"车辆临时通行证有效期为？",o:["1天至7天","7天以上6个月以内","1天至30天","3天至15天"],a:0},
+{q:"人员长期通行证要求签定几年以上合同？",o:["1年","2年","3年","5年"],a:1},
+{q:"查验人员严禁什么进入控制区？",o:["无证人员和车辆","外来人员","非工作人员","临时人员"],a:0},
+{q:"持临时通行证车辆应指定谁全程引领？",o:["任何工作人员","持有车辆内场驾驶证的专门人员","安检人员","空防联络员"],a:1}]},
+{n:"多选题",p:5,d:[
+{q:"持证人员在控制区内严禁的行为包括？",o:["使用伪造变造涂改通行证","转借冒用通行证超过授权区域通行","未经同意进入航空器活动区","进入与本单位无关的航空器"],a:[0,1,2,3]},
+{q:"申办单位哪些行为将被通报责令整改？",o:["为非本单位人员车辆申办","员工考试作弊","未履行背景调查职责","未按规定收回通行证"],a:[0,1,2,3]},
+{q:"申请变更人员通行证应提交的资料包括？",o:["通行证变更申请函","通行证申请表","背景调查材料","原通行证"],a:[0,1]},
+{q:"申请车辆短期临时通行证应提交的资料包括？",o:["办证申请函","车辆通行证申请表","驾驶员驾驶证和交强险复印件","监管人员内场驾驶证复印件"],a:[0,1,2,3]},
+{q:"哪些行为依照治安管理处罚法进行处罚？",o:["伪造变造涂改通行证","使用伪造变造国家机关证明文件申办","冒用他人通行证进入控制区","无通行证进入控制区"],a:[0,1,2,3]}]}
 ]}
 ];
 
-// ========== STATE ==========
-let S={paper:null,pi:0,qi:0,ans:{},practice:false,timer:null,time:3600,submitted:false,results:null};
-const $=id=>document.getElementById(id);
-const totalQ=p=>p.sections.reduce((s,sec)=>s+sec.questions.length,0);
-const totalScore=p=>p.sections.reduce((s,sec)=>s+sec.questions.length*sec.score,0);
-const flatIndex=(pi,qi)=>{let n=0;for(let i=0;i<pi;i++)n+=S.paper.sections[i].questions.length;return n+qi;};
-const getQ=fi=>{let n=0;for(const sec of S.paper.sections){if(fi<n+sec.questions.length){const lq=fi-n;return{sec,q:sec.questions[lq],qi:lq};}n+=sec.questions.length;}};
+function $(id){return document.getElementById(id)}
 
-// ========== MODE ==========
-function setMode(m){S.practice=m==='practice';document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));}
-
-// ========== HOME ==========
-function renderHome(){
-  const g=$('paperGrid');g.innerHTML='';
-  papers.forEach((p,i)=>{
-    const tq=totalQ(p),ts=totalScore(p);
-    const secs=p.sections.map(s=>`${s.name}${s.questions.length}题`).join(' / ');
-    g.innerHTML+=`<div class="paper-card" onclick="startPaper(${i})">
-      <div class="paper-num">${String(i+1).padStart(2,'0')}</div>
-      <div class="paper-name">${p.title}</div>
-      <div class="paper-desc">${secs}</div>
-      <div class="paper-stats">
-        <div class="paper-stat">共 <span>${tq}</span> 题</div>
-        <div class="paper-stat">满分 <span>${ts}</span> 分</div>
-        <div class="paper-stat">时长 <span>60</span> 分钟</div>
-      </div>
-      <div class="paper-start">开始答题 →</div>
-    </div>`;
-  });
-}
-
-// ========== START ==========
-function startPaper(i){
-  S.paper=papers[i];S.pi=i;S.qi=0;S.ans={};S.submitted=false;S.results=null;S.time=3600;
-  showScreen('quiz');
-  $('qTitle').textContent=S.paper.title+(S.practice?' · 练习模式':' · 考试模式');
-  renderNav();renderQ();
-  if(!S.practice)startTimer();else $('timerBox').style.display='none';
-  if(S.practice)$('btnSubmit').style.display='none';else $('btnSubmit').style.display='';
-}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0);}
-
-// ========== TIMER ==========
-function startTimer(){clearInterval(S.timer);S.timer=setInterval(()=>{S.time--;if(S.time<=0){clearInterval(S.timer);alert('时间到，自动交卷！');submitQuiz();}updateTimer();},1000);updateTimer();}
-function updateTimer(){const m=Math.floor(S.time/60),s=S.time%60;$('timerText').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');$('timerBox').classList.toggle('warn',S.time<300);}
-
-// ========== NAV ==========
-function renderNav(){
-  const nav=$('qNav');nav.innerHTML='';let fi=0;
-  S.paper.sections.forEach((sec,si)=>{
-    nav.innerHTML+=`<span class="nav-label">${sec.name}</span>`;
-    sec.questions.forEach((_,qi)=>{
-      const idx=fi++;
-      const answered=S.ans[idx]!==undefined;
-      const isCurrent=idx===flatIndex(S.pi,S.qi);
-      nav.innerHTML+=`<button class="nav-dot${answered?' answered':''}${isCurrent?' current':''}" onclick="goToQ(${idx})">${qi+1}</button>`;
-    });
-  });
-  updateProgress();
-}
-function updateNav(){
-  const dots=document.querySelectorAll('.nav-dot');
-  let fi=0;
-  S.paper.sections.forEach((sec,si)=>{
-    sec.questions.forEach((_,qi)=>{
-      const idx=fi++;
-      const dot=dots[idx];if(!dot)return;
-      dot.className='nav-dot';
-      if(S.submitted&&S.results){
-        const ok=S.results[idx];
-        if(ok)dot.classList.add('review-ok');else dot.classList.add('review-err');
-      }else{
-        if(S.ans[idx]!==undefined)dot.classList.add('answered');
-      }
-      if(idx===flatIndex(S.pi,S.qi))dot.classList.add('current');
-    });
-  });
-  updateProgress();
-}
-function updateProgress(){
-  const total=totalQ(S.paper);
-  const answered=Object.keys(S.ans).length;
-  $('qProgress').textContent=`${answered}/${total}`;
-}
-function goToQ(fi){let n=0;for(let si=0;si<S.paper.sections.length;si++){const len=S.paper.sections[si].questions.length;if(fi<n+len){S.qi=fi-n;break;}n+=len;}renderQ();renderNav();}
-
-// ========== RENDER QUESTION ==========
-function renderQ(){
-  const fi=flatIndex(S.pi,S.qi);
-  const{sec,q,qi}=getQ(fi);
-  const body=$('qBody');
-  const secIdx=S.paper.sections.indexOf(sec);
-  let html=`<div class="q-section-label">${sec.name}</div>`;
-  html+=`<div class="q-score">第${qi+1}题 · ${sec.score}分</div>`;
-  html+=`<div class="q-text">${q.q}</div>`;
-
-  if(sec.name==='判断题'){
-    html+=`<div class="q-tf">`;
-    ['对','错'].forEach((label,vi)=>{
-      const val=vi===0;
-      const sel=S.ans[fi]===val;
-      const cls=S.practice&&S.submitted?(val===q.a?'correct':''):'';
-      const dis=S.practice&&S.submitted?'disabled':'';
-      html+=`<div class="q-option${sel?' selected':''} ${cls} ${dis}" onclick="ansTF(${fi},${val})">
-        <span class="q-option-indicator">${sel?'✓':''}</span>
-        <span class="q-option-text">${label}</span>
-      </div>`;
-    });
-    html+=`</div>`;
-  }else{
-    html+=`<div class="q-options">`;
-    q.o.forEach((opt,vi)=>{
-      const label=String.fromCharCode(65+vi);
-      const isArr=Array.isArray(S.ans[fi]);
-      const sel=isArr?S.ans[fi].includes(vi):S.ans[fi]===vi;
-      let cls='';
-      if(S.practice&&S.submitted){
-        const isCorrect=Array.isArray(q.a)?q.a.includes(vi):q.a===vi;
-        if(isCorrect)cls='correct';
-        if(sel&&!isCorrect)cls='wrong';
-      }
-      const dis=S.practice&&S.submitted?'disabled':'';
-      html+=`<div class="q-option${sel?' selected':''} ${cls} ${dis}" onclick="ansChoice(${fi},${vi},${sec.name==='多选题'?1:0})">
-        <span class="q-option-indicator">${sel?(S.practice&&S.submitted?(cls==='correct'?'✓':'✗'):'✓'):''}</span>
-        <span class="q-option-text"><span class="q-option-label">${label}.</span>${opt}</span>
-      </div>`;
-    });
-    html+=`</div>`;
+function showPage(id){
+  var pages=["page-home","page-quiz","page-result"];
+  for(var i=0;i<pages.length;i++){
+    $(pages[i]).className="page";
   }
-
-  if(S.practice&&S.submitted){
-    const isOk=S.results&&S.results[fi];
-    html+=`<div class="review-answer" style="color:${isOk?'var(--ok)':'var(--err)'}">${isOk?'✓ 回答正确':'✗ 回答错误 — 正确答案：'+(sec.name==='判断题'?(q.a?'对':'错'):formatAnswer(q.a))}</div>`;
-  }
-
-  body.innerHTML=html;
-  body.scrollTop=0;
-  $('btnPrev').disabled=S.qi===0;
-  const lastQ=S.paper.sections[S.paper.sections.length-1].questions.length-1;
-  const lastSec=S.paper.sections.length-1;
-  const isLast=S.pi===lastSec&&S.qi===lastQ;
-  $('btnNext').textContent=isLast?'':'下一题';
-  $('btnNext').disabled=isLast;
-  updateNav();
+  $(id).className="page on";
+  window.scrollTo(0,0);
 }
-function formatAnswer(a){
-  if(Array.isArray(a))return a.map(i=>String.fromCharCode(65+i)).join('');
+
+function totalQ(){var n=0;var s=P[pi].s;for(var i=0;i<s.length;i++)n+=s[i].d.length;return n}
+function totalS(){var n=0;var s=P[pi].s;for(var i=0;i<s.length;i++)n+=s[i].d.length*s[i].p;return n}
+
+function findQ(fi){
+  var n=0;var secs=P[pi].s;
+  for(var si=0;si<secs.length;si++){
+    if(fi<n+secs[si].d.length)return{s:secs[si],qi:fi-n,si:si};
+    n+=secs[si].d.length;
+  }
+  return null;
+}
+
+function fmtA(a){
+  if(Array.isArray(a)){var r="";for(var i=0;i<a.length;i++)r+=String.fromCharCode(65+a[i]);return r;}
   return String.fromCharCode(65+a);
 }
 
-// ========== ANSWER ==========
-function ansTF(fi,val){if(S.practice&&S.submitted)return;S.ans[fi]=val;if(S.practice){checkPractice(fi);return;}renderQ();}
-function ansChoice(fi,vi,multi){if(S.practice&&S.submitted)return;
-  if(multi){
-    let arr=Array.isArray(S.ans[fi])?([...S.ans[fi]]):[];
-    const idx=arr.indexOf(vi);
-    if(idx>-1)arr.splice(idx,1);else arr.push(vi);
-    arr.sort();S.ans[fi]=arr.length?arr:undefined;
-  }else{S.ans[fi]=vi;}
-  if(S.practice){checkPractice(fi);return;}
-  renderQ();
-}
-function checkPractice(fi){
-  const{sec,q}=getQ(fi);
-  S.submitted=true;S.results=S.results||{};
-  let ok=false;
-  if(sec.name==='判断题'){ok=S.ans[fi]===q.a;}
-  else if(Array.isArray(q.a)){ok=Array.isArray(S.ans[fi])&&q.a.length===(S.ans[fi]||[]).length&&q.a.every(a=>(S.ans[fi]||[]).includes(a));}
-  else{ok=S.ans[fi]===q.a;}
-  S.results[fi]=ok;
-  renderQ();
+function setMode(m){
+  mode=m;
+  $("me").className=m===0?"mb on":"mb";
+  $("mp").className=m===1?"mb on":"mb";
 }
 
-// ========== NAVIGATION ==========
-function prevQ(){if(S.qi>0){S.qi--;renderQ();renderNav();}}
-function nextQ(){
-  const sec=S.paper.sections;
-  let totalPrev=0;
-  for(let i=0;i<=S.pi;i++)totalPrev+=sec[i].questions.length;
-  const fi=flatIndex(S.pi,S.qi);
-  if(fi<totalQ(S.paper)-1){goToQ(fi+1);}
-}
-
-// ========== SUBMIT ==========
-function submitQuiz(){
-  if(!S.practice&&!S.submitted){
-    const unanswered=totalQ(S.paper)-Object.keys(S.ans).length;
-    if(unanswered>0&&!confirm(`还有${unanswered}题未作答，确定交卷吗？`))return;
-    clearInterval(S.timer);
+function renderList(){
+  var h="";
+  for(var i=0;i<P.length;i++){
+    var tq=0,ts=0;var s=P[i].s;
+    for(var j=0;j<s.length;j++){tq+=s[j].d.length;ts+=s[j].d.length*s[j].p;}
+    var tg="";for(var j=0;j<s.length;j++){if(j>0)tg+=" / ";tg+=s[j].n+" "+s[j].d.length+"题";}
+    h+='<div class="pc"><h3>'+P[i].t+'</h3>';
+    h+='<p>'+tg+' · 共'+tq+'题 · 满分'+ts+'分 · 60分钟</p>';
+    h+='<button class="sb" onclick="startP('+i+')">开始答题</button></div>';
   }
-  S.submitted=true;
-  // Calculate results
-  S.results={};let correct=0,total=0,secStats=[];
-  S.paper.sections.forEach(sec=>{
-    let sc=0,st=sec.questions.length;
-    let fi=0;for(let i=0;i<S.paper.sections.indexOf(sec);i++)fi+=S.paper.sections[i].questions.length;
-    sec.questions.forEach((q,qi)=>{
-      const idx=fi+qi;total++;
-      let ok=false;
-      if(sec.name==='判断题'){ok=S.ans[idx]===q.a;}
-      else if(Array.isArray(q.a)){ok=Array.isArray(S.ans[idx])&&q.a.length===(S.ans[idx]||[]).length&&q.a.every(a=>(S.ans[idx]||[]).includes(a));}
-      else{ok=S.ans[idx]===q.a;}
-      S.results[idx]=ok;if(ok){sc++;correct++;}
-    });
-    secStats.push({name:sec.name,correct:sc,total:st,score:sc*sec.score,totalScore:st*sec.score});
-  });
-  renderResult(correct,total,secStats);
+  $("pl").innerHTML=h;
 }
-function renderResult(correct,total,secStats){
-  showScreen('result');
-  const ts=totalScore(S.paper);
-  const earned=secStats.reduce((s,x)=>s+x.score,0);
-  const pct=Math.round(earned/ts*100);
-  $('resultCard').innerHTML=`
-    <div class="result-score">${earned}<span> / ${ts}</span></div>
-    <div class="result-pct">正确率 ${pct}% · ${correct}/${total} 题正确</div>
-    <div class="result-bar"><div class="result-bar-fill" style="width:0%"></div></div>
-    <div class="result-details">
-      ${secStats.map(s=>`<div class="result-detail-item">
-        <div class="result-detail-label">${s.name}</div>
-        <div class="result-detail-value ${s.correct===s.total?'ok':s.correct===0?'err':'accent'}">${s.correct}/${s.total}</div>
-      </div>`).join('')}
-    </div>`;
-  setTimeout(()=>{$('.result-bar-fill').style.width=pct+'%';},100);
-  renderReview();
+
+function startP(idx){
+  pi=idx;qi=0;ans={};done=false;res={};tm=3600;
+  if(tid){clearInterval(tid);tid=null;}
+  showPage("page-quiz");
+  if(mode===0){startT();}
+  renderQ();
 }
-function renderReview(){
-  const sec=$('reviewSection');sec.innerHTML='<h3>答题详情</h3>';
-  let fi=0;
-  S.paper.sections.forEach((section,si)=>{
-    section.questions.forEach((q,qi)=>{
-      const idx=fi++;
-      const ok=S.results[idx];
-      const userAns=S.ans[idx];
-      let html=`<div class="review-q ${ok?'review-ok':'review-err'}">
-        <div class="review-q-num"><span>${section.name} · 第${qi+1}题</span><span>${ok?'✓ 正确':'✗ 错误'}</span></div>
-        <div class="review-q-text">${q.q}</div>`;
-      if(section.name==='判断题'){
-        ['对','错'].forEach((label,vi)=>{
-          const val=vi===0;
-          const isUser=userAns===val;
-          const isCorrect=q.a===val;
-          let cls='q-option ';
-          if(isCorrect)cls+='correct';
-          if(isUser&&!isCorrect)cls+='wrong';
-          if(isUser)cls+='selected';
-          html+=`<div class="${cls}"><span class="q-option-indicator">${isUser?(isCorrect?'✓':'✗'):''}</span><span class="q-option-text">${label}</span></div>`;
-        });
+
+function startT(){
+  if(tid)clearInterval(tid);
+  tid=setInterval(function(){
+    tm--;
+    if(tm<=0){clearInterval(tid);tid=null;alert("时间到，自动交卷！");doSubmit();return;}
+    var el=$("clk");
+    if(el){
+      var m=Math.floor(tm/60),s=tm%60;
+      el.textContent=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+      el.style.color=tm<300?"#f44336":"#d4a843";
+    }
+  },1000);
+}
+
+function renderQ(){
+  var info=findQ(qi);
+  if(!info)return;
+  var sec=info.s,q=sec.d[info.qi];
+  var isM=sec.n==="多选题";
+  var isT=sec.n==="判断题";
+  var tq=totalQ();
+  var h="";
+
+  h+='<div class="qh"><button class="bk" onclick="exitQ()">X</button>';
+  h+='<span class="hi">'+P[pi].t+(mode===0?" 考试模式":" 练习模式")+'</span>';
+  if(mode===0){
+    var m=Math.floor(tm/60),s=tm%60;
+    h+='<span class="ht" id="clk" style="'+(tm<300?"color:#f44336":"")+'">'+(m<10?"0":"")+m+":"+(s<10?"0":"")+s+'</span>';
+  }else{
+    h+='<span class="ht" style="color:#777">'+(qi+1)+'/'+tq+'</span>';
+  }
+  h+='</div>';
+
+  h+='<div class="qt">';
+  var fi=0;
+  for(var si=0;si<P[pi].s.length;si++){
+    h+='<span class="tl">'+P[pi].s[si].n.substring(0,2)+'</span>';
+    for(var j=0;j<P[pi].s[si].d.length;j++){
+      var idx=fi++;
+      var c="tn";
+      if(mode===1&&res[idx]!==undefined)c+=res[idx]?" ck":" wr";
+      else if(ans[idx]!==undefined)c+=" an";
+      if(idx===qi)c+=" cu";
+      h+='<button class="'+c+'" onclick="goTo('+idx+')">'+(j+1)+'</button>';
+    }
+  }
+  h+='</div>';
+
+  h+='<div class="qb">';
+  h+='<div class="st">'+sec.n+'</div>';
+  h+='<div class="qi">第'+(info.qi+1)+'题 · '+sec.p+'分</div>';
+  h+='<div class="qt2">'+q.q+'</div>';
+
+  if(isT){
+    h+='<div class="tfr">';
+    var lb=["对","错"],vl=[1,0];
+    for(var vi=0;vi<2;vi++){
+      var v=vl[vi],sel=ans[qi]===v;
+      var c="op";
+      if(mode===1&&done){
+        if(v===q.a)c+=" ck";
+        if(sel&&v!==q.a)c+=" wr";
+      }
+      if(sel&&!(mode===1&&done&&v!==q.a))c+=" sl";
+      var dt="";
+      if(sel){dt=(mode===1&&done?(v===q.a?"V":"X"):"V");}
+      h+='<div class="'+c+'" onclick="pick('+qi+','+v+',0)"><span class="od">'+dt+'</span><span class="ot">'+lb[vi]+'</span></div>';
+    }
+    h+='</div>';
+  }else{
+    for(var vi=0;vi<q.o.length;vi++){
+      var lb=String.fromCharCode(65+vi);
+      var iA=Array.isArray(ans[qi]);
+      var sel=iA?(ans[qi].indexOf(vi)>-1):(ans[qi]===vi);
+      var c="op";
+      if(mode===1&&done){
+        var iC=Array.isArray(q.a)?(q.a.indexOf(vi)>-1):(q.a===vi);
+        if(iC)c+=" ck";
+        if(sel&&!iC)c+=" wr";
+      }
+      if(sel&&!(mode===1&&done)){
+        var iC2=Array.isArray(q.a)?(q.a.indexOf(vi)>-1):(q.a===vi);
+        if(!(mode===1&&done&&!iC2))c+=" sl";
+      }
+      var dt="";
+      if(sel){
+        if(mode===1&&done){
+          var iC3=Array.isArray(q.a)?(q.a.indexOf(vi)>-1):(q.a===vi);
+          dt=iC3?"V":"X";
+        }else{dt="V";}
+      }
+      h+='<div class="'+c+'" onclick="pick('+qi+','+vi+','+(isM?1:0)+')"><span class="od">'+dt+'</span><span class="ot"><span class="ol">'+lb+'.</span>'+q.o[vi]+'</span></div>';
+    }
+  }
+
+  if(mode===1&&done){
+    var ok=res[qi];
+    var ca=isT?(q.a===1?"对":"错"):fmtA(q.a);
+    h+='<div class="pt '+(ok?"pa":"fa")+'">'+(ok?"V 回答正确":"X 回答错误 - 正确答案: "+ca)+'</div>';
+  }
+  h+='</div>';
+
+  h+='<div class="qf">';
+  h+='<button class="fb pr" onclick="prevQ()"'+(qi===0?" disabled":"")+'>上一题</button>';
+  if(qi>=tq-1){
+    h+='<button class="fb nx" disabled>下一题</button>';
+  }else{
+    h+='<button class="fb nx" onclick="nextQ()">下一题</button>';
+  }
+  if(mode===0){
+    h+='<button class="fb su" onclick="doSubmit()">交卷</button>';
+  }else if(qi>=tq-1){
+    h+='<button class="fb su" onclick="doSubmit()">查看成绩</button>';
+  }
+  h+='</div>';
+
+  $("page-quiz").innerHTML=h;
+}
+
+function pick(fi,v,multi){
+  if(mode===1&&done)return;
+  if(multi){
+    var arr=ans[fi]!==undefined?(Array.isArray(ans[fi])?ans[fi].slice()):[];
+    var pos=arr.indexOf(v);
+    if(pos>-1)arr.splice(pos,1);else arr.push(v);
+    arr.sort();
+    ans[fi]=arr.length>0?arr:undefined;
+  }else{
+    ans[fi]=v;
+  }
+  if(mode===1){checkA(fi);}else{renderQ();}
+}
+
+function checkA(fi){
+  var info=findQ(fi);
+  if(!info)return;
+  var sec=info.s,q=sec.d[info.qi];
+  done=true;
+  if(sec.n==="判断题"){
+    res[fi]=(ans[fi]===q.a);
+  }else if(Array.isArray(q.a)){
+    var ua=Array.isArray(ans[fi])?ans[fi]:[];
+    res[fi]=(q.a.length===ua.length)&&q.a.every(function(a){return ua.indexOf(a)>-1;});
+  }else{
+    res[fi]=(ans[fi]===q.a);
+  }
+  renderQ();
+}
+
+function goTo(fi){
+  qi=fi;done=false;renderQ();
+}
+
+function prevQ(){if(qi>0){qi--;done=false;renderQ();}}
+function nextQ(){if(qi<totalQ()-1){qi++;done=false;renderQ();}}
+
+function doSubmit(){
+  var ua=totalQ()-Object.keys(ans).length;
+  if(ua>0&&!confirm("还有"+ua+"题未作答，确定提交吗？"))return;
+  if(tid){clearInterval(tid);tid=null;}
+  done=true;
+  res={};var cor=0,tot=0,ss=[];var fi=0;
+  for(var si=0;si<P[pi].s.length;si++){
+    var sec=P[pi].s[si],sc=0;
+    for(var j=0;j<sec.d.length;j++){
+      var idx=fi++,q=sec.d[j];tot++;
+      var ok=false;
+      if(sec.n==="判断题"){ok=(ans[idx]===q.a);}
+      else if(Array.isArray(q.a)){
+        var ua2=Array.isArray(ans[idx])?ans[idx]:[];
+        ok=(q.a.length===ua2.length)&&q.a.every(function(a){return ua2.indexOf(a)>-1;});
+      }else{ok=(ans[idx]===q.a);}
+      res[idx]=ok;if(ok){sc++;cor++;}
+    }
+    ss.push({n:sec.n,c:sc,t:sec.d.length,sc:sc*sec.p,ts:sec.d.length*sec.p});
+  }
+  showRes(cor,tot,ss);
+}
+
+function showRes(cor,tot,ss){
+  showPage("page-result");
+  var ts=totalS(),earned=0;
+  for(var i=0;i<ss.length;i++)earned+=ss[i].sc;
+  var pct=Math.round(earned/ts*100);
+
+  var h='<div class="sb2">';
+  h+='<div class="sbg">'+earned+'<span> / '+ts+'</span></div>';
+  h+='<div class="sbs">正确率 '+pct+'% · '+cor+'/'+tot+' 题正确</div>';
+  h+='<div class="sbb"><div class="sbf" id="bf"></div></div>';
+  h+='<div class="sbr">';
+  for(var i=0;i<ss.length;i++){
+    var c=ss[i].c===ss[i].t?"#4caf50":ss[i].c===0?"#f44336":"#d4a843";
+    h+='<div class="sbi"><div class="sbil">'+ss[i].n+'</div><div class="sbiv" style="color:'+c+'">'+ss[i].c+'/'+ss[i].t+'</div></div>';
+  }
+  h+='</div></div>';
+
+  h+='<div class="rbs"><button class="bh" onclick="goHome()">返回首页</button>';
+  h+='<button class="br" onclick="startP('+pi+')">再做一次</button></div>';
+
+  h+='<div class="rv"><h3>答题详情</h3>';
+  var fi=0;
+  for(var si=0;si<P[pi].s.length;si++){
+    var sec=P[pi].s[si];
+    for(var j=0;j<sec.d.length;j++){
+      var idx=fi++,q=sec.d[j],ok=res[idx],ua=ans[idx];
+      h+='<div class="ri'+(ok?"":" wr")+'">';
+      h+='<div class="rh"><span>'+sec.n+' · 第'+(j+1)+'题</span><span>'+(ok?"V 正确":"X 错误")+'</span></div>';
+      h+='<div class="rq">'+q.q+'</div>';
+
+      if(sec.n==="判断题"){
+        var lb2=["对","错"],vl2=[1,0];
+        for(var vi=0;vi<2;vi++){
+          var v=vl2[vi],iU=(ua===v),iC=(q.a===v);
+          var bc=iC?"#4caf50":iU?"#f44336":"#333";
+          var bg=iC?"rgba(76,175,80,0.1)":iU?"rgba(244,67,54,0.1)":"none";
+          h+='<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;border:1px solid '+bc+';background:'+bg+';margin-bottom:3px;font-size:12px">';
+          h+='<span style="width:16px;height:16px;border-radius:50%;border:2px solid '+bc+';background:'+(iU?bc:"none")+';color:'+(iU?"#fff":"transparent")+';display:flex;align-items:center;justify-content:center;font-size:9px">'+(iU?(iC?"V":"X"):"")+'</span>';
+          h+=lb2[vi]+'</div>';
+        }
       }else{
-        q.o.forEach((opt,vi)=>{
-          const label=String.fromCharCode(65+vi);
-          const isUser=Array.isArray(userAns)?userAns.includes(vi):userAns===vi;
-          const isCorrect=Array.isArray(q.a)?q.a.includes(vi):q.a===vi;
-          let cls='q-option ';
-          if(isCorrect)cls+='correct';
-          if(isUser&&!isCorrect)cls+='wrong';
-          if(isUser)cls+='selected';
-          html+=`<div class="${cls}"><span class="q-option-indicator">${isUser?(isCorrect?'✓':'✗'):''}</span><span class="q-option-text"><span class="q-option-label">${label}.</span>${opt}</span></div>`;
-        });
+        for(var vi=0;vi<q.o.length;vi++){
+          var lb=String.fromCharCode(65+vi);
+          var iU=Array.isArray(ua)?(ua.indexOf(vi)>-1):(ua===vi);
+          var iC=Array.isArray(q.a)?(q.a.indexOf(vi)>-1):(q.a===vi);
+          var bc=iC?"#4caf50":iU?"#f44336":"#333";
+          var bg=iC?"rgba(76,175,80,0.1)":iU?"rgba(244,67,54,0.1)":"none";
+          h+='<div style="display:flex;align-items:flex-start;gap:6px;padding:6px 8px;border-radius:6px;border:1px solid '+bc+';background:'+bg+';margin-bottom:3px;font-size:12px">';
+          h+='<span style="width:16px;height:16px;border-radius:50%;border:2px solid '+bc+';background:'+(iU?bc:"none")+';color:'+(iU?"#fff":"transparent")+';display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0">'+(iU?(iC?"V":"X"):"")+'</span>';
+          h+='<span><b style="color:#777">'+lb+'.</b>'+q.o[vi]+'</span></div>';
+        }
       }
+
       if(!ok){
-        html+=`<div class="review-answer">正确答案：${section.name==='判断题'?(q.a?'对':'错'):formatAnswer(q.a)}</div>`;
+        var ca=sec.n==="判断题"?(q.a===1?"对":"错"):fmtA(q.a);
+        h+='<div class="ra" style="color:#f44336">正确答案：'+ca+'</div>';
       }
-      html+=`</div>`;
-      sec.innerHTML+=html;
-    });
-  });
+      h+='</div>';
+    }
+  }
+  h+='</div>';
+  $("page-result").innerHTML=h;
+  setTimeout(function(){var b=$("bf");if(b)b.style.width=pct+"%";},50);
 }
 
-// ========== UTILS ==========
-function exitQuiz(){if(!confirm('确定退出吗？当前进度将不会保存。'))return;clearInterval(S.timer);goHome();}
-function goHome(){clearInterval(S.timer);showScreen('home');}
-function retryPaper(){startPaper(S.pi);}
+function goHome(){if(tid){clearInterval(tid);tid=null;}showPage("page-home");}
+function exitQ(){if(confirm("确定退出吗？当前进度不会保存。"))goHome();}
 
-// ========== INIT ==========
-renderHome();
+renderList();
 </script>
 </body>
 </html>
